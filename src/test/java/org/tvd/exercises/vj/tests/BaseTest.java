@@ -1,4 +1,4 @@
-package org.tvd.tests;
+package org.tvd.exercises.vj.tests;
 
 
 import com.codeborne.selenide.Configuration;
@@ -15,6 +15,7 @@ import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Parameters;
+
 import java.io.File;
 import java.util.Date;
 import java.util.logging.Level;
