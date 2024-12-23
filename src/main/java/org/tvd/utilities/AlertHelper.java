@@ -14,34 +14,35 @@ import static java.lang.invoke.MethodHandles.lookup;
 
 public class AlertHelper {
 
-    private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass() );
+	private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());
 
-    /**
-     * To click on the 'OK' button of the alert.
-     */
-    public static void confirmAlert() {
-        waitForAlertVisible();
-        Selenide.confirm();
-    }
+	/**
+	 * To click on the 'OK' button of the alert.
+	 */
+	public static void confirmAlert() {
+		waitForAlertVisible();
+		Selenide.confirm();
+	}
 
-    /**
-     * To get the alert message.
-     */
-    @Step(value = "To get the alert message" )
-    public static String getTextAlert() {
-        waitForAlertVisible();
-        String alertText = Selenide.switchTo().alert().getText();
-        log.info("The alert message gotten: {}", alertText);
-        return alertText;
-    }
+	/**
+	 * To get the alert message.
+	 */
+	@Step(value = "To get the alert message")
+	public static String getTextAlert() {
+		waitForAlertVisible();
+		String alertText = Selenide.switchTo().alert().getText();
+		log.info("The alert message gotten: {}", alertText);
+		return alertText;
+	}
 
-    /**
-     * To wait for the alert appear.
-     */
-    @Step(value = "Wait for alert appear")
-    public static void waitForAlertVisible() {
-        WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(), Duration.ofSeconds(Integer.parseInt(PropertiesUtils.getValue("SHORT_TIME"))));
-        wait.until(ExpectedConditions.alertIsPresent());
-    }
+	/**
+	 * To wait for the alert appear.
+	 */
+	@Step(value = "Wait for alert appear")
+	public static void waitForAlertVisible() {
+		WebDriverWait wait = new WebDriverWait(WebDriverRunner.getWebDriver(),
+				Duration.ofSeconds(Integer.parseInt(PropertiesUtils.getValue("SHORT_TIME"))));
+		wait.until(ExpectedConditions.alertIsPresent());
+	}
 
 }

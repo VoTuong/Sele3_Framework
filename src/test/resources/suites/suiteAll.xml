@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Suite Tests"> <!--parallel="classes" thread-count="2"-->
+    <listeners>
+        <!--        <listener class-name="com.epam.reportportal.testng.ReportPortalTestNGListener"/>-->
+        <listener class-name="org.tvd.listeners.AnnotationTransformer"/>
+    </listeners>
+    <suite-files>
+        <!--        <suite-file path="GoogleSearchTest.xml"/>-->
+        <suite-file path="ExecutionModeTest.xml"/>
+    </suite-files>
+</suite>
