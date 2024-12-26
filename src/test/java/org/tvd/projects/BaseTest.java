@@ -1,4 +1,4 @@
-package org.tvd.projects.google.tests;
+package org.tvd.projects;
 
 
 import com.codeborne.selenide.Configuration;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.tvd.base.DriverFactory;
-import org.tvd.utilities.EmailUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -60,16 +59,6 @@ public class BaseTest {
 	public void tearDown() {
 		// Close the browser after each test
 		Selenide.closeWebDriver();
-	}
-
-	@AfterSuite
-	public void sendEmailReport() {
-		String reportPath = "target/surefire-reports/emailable-report.html";
-		String subject = "Test Execution Report";
-		String body = "Test execution finished. Please find the report attached.";
-		String toEmail = "voddangtuong@gmail.com";
-
-		EmailUtils.sendEmail(toEmail, subject, body, reportPath);
 	}
 
 	@AfterMethod

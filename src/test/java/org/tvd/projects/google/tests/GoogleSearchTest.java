@@ -3,6 +3,7 @@ package org.tvd.projects.google.tests;
 import io.qameta.allure.Description;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.tvd.projects.BaseTest;
 import org.tvd.projects.google.pages.GooglePage;
 
 public class GoogleSearchTest extends BaseTest {
