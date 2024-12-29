@@ -1,43 +1,31 @@
-package org.tvd.projects;
+package org.tvd.projects.google.tests;
 
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.logevents.SelenideLogger;
-import com.epam.reportportal.selenide.ReportPortalSelenideEventListener;
-import com.epam.reportportal.service.ReportPortal;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.logging.LogType;
+import com.google.common.collect.ImmutableMap;
+import io.qameta.allure.selenide.AllureSelenide;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.tvd.base.DriverFactory;
 
-import java.io.File;
 import java.net.MalformedURLException;
-import java.util.Date;
-import java.util.logging.Level;
 
+import static com.codeborne.selenide.Selenide.getUserAgent;
 import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.screenshot;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import static com.codeborne.selenide.WebDriverRunner.isHeadless;
+import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnvironmentWriter;
 import static java.lang.invoke.MethodHandles.lookup;
 
 public class BaseTest {
 	private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());
 
-
-	static {
-		SelenideLogger.addListener(
-				"ReportPortal logger",
-				new ReportPortalSelenideEventListener()
-						.enableSeleniumLogs(LogType.BROWSER, Level.FINER)
-						.logScreenshots(true)
-						.logPageSources(false)
-		);
-	}
+//	static {
+//		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
+//	}
 
 	@Parameters({"browser", "executionMode"})
 	@BeforeClass
@@ -45,6 +33,7 @@ public class BaseTest {
 		DriverFactory.setupDriver(browser, executionMode);
 
 		Configuration.headless = false;
+		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
 		log.info("Start {} TestNG testcases in {}", getClass().getName(), Configuration.browser);
 	}
 
@@ -52,23 +41,27 @@ public class BaseTest {
 	@BeforeMethod
 	public void launch() {
 		open();
-		WebDriverRunner.getWebDriver().manage().window().maximize();
+		getWebDriver().manage().window().maximize();
 	}
 
 	@AfterMethod
 	public void tearDown() {
 		// Close the browser after each test
+//		screenshot();
+		allureEnvironmentWriter(
+				ImmutableMap.<String, String>builder()
+						.put("BASE_URL", Configuration.baseUrl)
+						.put("WebDriver", String.valueOf(getWebDriver()))
+						.put("UserAgent", getUserAgent())
+						.put("isHeadless", String.valueOf(isHeadless()))
+						.build(), System.getProperty("user.dir") + "/allure-results/");
 		Selenide.closeWebDriver();
 	}
 
-	@AfterMethod
-	public void addAttachmentOnFailure(ITestResult testResult) {
-		if (!testResult.isSuccess()) {
-			if (WebDriverRunner.getWebDriver() instanceof TakesScreenshot) {
-				File screenshot = screenshot(OutputType.FILE);
-				ReportPortal.emitLog("Test failed - Screenshot attached " + testResult.getMethod().getMethodName(), "ERROR", new Date(), screenshot);
-			}
-		}
-	}
+//	@Attachment(type = "image/png")
+//	public byte[] screenshot() throws IOException {
+//		File screenshot = new File(Screenshots.saveScreenshotAndPageSource());
+//		return Files.toByteArray(screenshot);
+//	}
 
 }
