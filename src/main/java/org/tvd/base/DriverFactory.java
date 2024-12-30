@@ -18,7 +18,6 @@ public class DriverFactory {
 		if ("grid".equalsIgnoreCase(mode)) {
 			RemoteWebDriver driver = getRemoteWebDriver(browser);
 			WebDriverRunner.setWebDriver(driver);
-//			Configuration.remote = PropertiesUtils.getValue("GRID_URL");
 		} else {
 			switch (browser.toLowerCase()) {
 				case "chrome":

@@ -17,7 +17,7 @@
     <!--    </test>-->
     <test name="Edge Grid">
         <parameter name="browser" value="edge"/>
-        <parameter name="executionMode" value="grid"/>
+        <parameter name="executionMode" value="local"/>
         <classes>
             <class name="org.tvd.projects.google.tests.GoogleSearchTest"/>
         </classes>

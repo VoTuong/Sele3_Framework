@@ -1,4 +1,4 @@
-package org.tvd.projects.google.tests;
+package org.tvd.projects;
 
 
 import com.codeborne.selenide.Configuration;
