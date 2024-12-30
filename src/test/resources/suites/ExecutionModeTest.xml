@@ -5,7 +5,7 @@
         <parameter name="browser" value="chrome"/>
         <parameter name="executionMode" value="local"/>
         <classes>
-            <class name="org.tvd.projects.google.tests.GoogleSearchTest"/>
+            <class name="org.tvd.projects.vietjet.pages.TestOne"/>
         </classes>
     </test>
     <!--    <test name="Firefox Grid">-->
@@ -15,11 +15,11 @@
     <!--            <class name="org.tvd.projects.google.tests.GoogleSearchTest" />-->
     <!--        </classes>-->
     <!--    </test>-->
-    <test name="Edge Grid">
-        <parameter name="browser" value="edge"/>
-        <parameter name="executionMode" value="local"/>
-        <classes>
-            <class name="org.tvd.projects.google.tests.GoogleSearchTest"/>
-        </classes>
-    </test>
+<!--    <test name="Edge Grid">-->
+<!--        <parameter name="browser" value="edge"/>-->
+<!--        <parameter name="executionMode" value="local"/>-->
+<!--        <classes>-->
+<!--            <class name="org.tvd.projects.google.tests.GoogleSearchTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 </suite>
