@@ -15,6 +15,7 @@
         <java-compiler.version>17</java-compiler.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <tika-core.version>3.0.0</tika-core.version>
     </properties>
 
     <build>
@@ -46,6 +47,13 @@
     </build>
 
     <dependencies>
+
+        <!-- https://mvnrepository.com/artifact/com.github.pemistahl/lingua -->
+        <dependency>
+            <groupId>com.github.pemistahl</groupId>
+            <artifactId>lingua</artifactId>
+            <version>1.2.2</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
         <dependency>

@@ -5,7 +5,7 @@
         <parameter name="browser" value="chrome"/>
         <parameter name="executionMode" value="local"/>
         <classes>
-            <class name="org.tvd.projects.vietjet.pages.TestOne"/>
+            <class name="org.tvd.projects.vietjet.tests.TestOne"/>
         </classes>
     </test>
     <!--    <test name="Firefox Grid">-->
