@@ -1,15 +1,14 @@
-package org.tvd.projects;
+package tests;
 
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
-import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.ImmutableMap;
-import io.qameta.allure.selenide.AllureSelenide;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.tvd.base.DriverFactory;
+import org.tvd.utilities.LogUtils;
+import org.tvd.utilities.ScreenshotUtils;
 
 import java.net.MalformedURLException;
 
@@ -18,11 +17,8 @@ import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 import static com.codeborne.selenide.WebDriverRunner.isHeadless;
 import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnvironmentWriter;
-import static java.lang.invoke.MethodHandles.lookup;
 
 public class BaseTest {
-	private static final Logger log = LoggerFactory.getLogger(lookup().lookupClass());
-
 //	static {
 //		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
 //	}
@@ -33,8 +29,8 @@ public class BaseTest {
 		DriverFactory.setupDriver(browser, executionMode);
 
 		Configuration.headless = false;
-		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
-		log.info("Start {} TestNG testcases in {}", getClass().getName(), Configuration.browser);
+//		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
+		LogUtils.info("Start {} TestNG testcases in {}", getClass().getName(), Configuration.browser);
 	}
 
 
@@ -45,9 +41,8 @@ public class BaseTest {
 	}
 
 	@AfterMethod
-	public void tearDown() {
+	public void tearDown(ITestResult result) {
 		// Close the browser after each test
-//		screenshot();
 		allureEnvironmentWriter(
 				ImmutableMap.<String, String>builder()
 						.put("BASE_URL", Configuration.baseUrl)
@@ -55,13 +50,12 @@ public class BaseTest {
 						.put("UserAgent", getUserAgent())
 						.put("isHeadless", String.valueOf(isHeadless()))
 						.build(), System.getProperty("user.dir") + "/allure-results/");
+
+		if (result.getStatus() == ITestResult.FAILURE) {
+			LogUtils.error("Test case failed: " + result.getName());
+			ScreenshotUtils.takeScreenshotAndAddToAllure(result.getName());
+		}
 		Selenide.closeWebDriver();
 	}
-
-//	@Attachment(type = "image/png")
-//	public byte[] screenshot() throws IOException {
-//		File screenshot = new File(Screenshots.saveScreenshotAndPageSource());
-//		return Files.toByteArray(screenshot);
-//	}
 
 }

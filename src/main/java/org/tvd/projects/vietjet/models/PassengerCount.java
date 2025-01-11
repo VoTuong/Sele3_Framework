@@ -1,16 +1,14 @@
 package org.tvd.projects.vietjet.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Data
-@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PassengerCount {
 	private int adults;
-
-	public PassengerCount(int adults) {
-		this.adults = adults;
-	}
 //	int children;
 //	int infants;
 }

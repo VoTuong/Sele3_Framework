@@ -2,12 +2,11 @@ package org.tvd.projects.vietjet.pages;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.tvd.projects.vietjet.data.MonthTranslation;
 import org.tvd.projects.vietjet.models.TicketModel;
 import org.tvd.utilities.LanguageUtils;
+import org.tvd.utilities.LogUtils;
 import org.tvd.utilities.PropertiesUtils;
 
 import java.time.LocalDate;
@@ -18,7 +17,6 @@ import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class HomePage {
-	private static final Logger logger = LogManager.getLogger(HomePage.class);
 
 	private static final SelenideElement cookiePopUp = $x("//div[@id='popup-dialog-description']");
 	private static final SelenideElement acceptCookiesBtn = $x("//div[@id='popup-dialog-description']/following" +
@@ -45,7 +43,7 @@ public class HomePage {
 		"MuiButton-contained')]/span[@class='MuiButton-label']");
 
 	public HomePage openHomePage(){
-		logger.info("Open the VietJet Air homepage");
+		LogUtils.info("Open the VietJet Air homepage");
 		open("https://www.vietjetair.com/");
 		return this;
 	}
@@ -93,7 +91,7 @@ public class HomePage {
 	private void selectNumberOfAdults(Integer adultNumber) {
 		clickOnFormToDismissDropdown();
 		passengerDropDown.shouldBe(visible).click();
-		logger.info("Clicked on Passengers button");
+		LogUtils.info("Clicked on Passengers button");
 		for (int i = 1; i < adultNumber; i++) {
 			$x("//img[@alt='adults']//parent::div//parent::div//parent::div//button[2]").click();
 		}
@@ -107,11 +105,11 @@ public class HomePage {
 		DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("d");
 		String tomorrowStr = tomorrow.format(dayFormatter);
 		String returnDateStr = returnDate.format(dayFormatter);
-		logger.info("Set date take off {}", tomorrowStr);
+		LogUtils.info("Set date take off {}", tomorrowStr);
 		selectDepartureDateButton();
 
 		DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MMMM yyyy");
-		logger.info("Selecting month {}", tomorrow.format(monthYearFormatter));
+		LogUtils.info("Selecting month {}", tomorrow.format(monthYearFormatter));
 		selectMonthAndYear(tomorrow.format(monthYearFormatter));
 
 		selectDayInCalendar(tomorrowStr);
@@ -122,37 +120,37 @@ public class HomePage {
 	private static void selectDepartureDateButton(){
 		departureDateButton.hover();
 		departureDateButton.shouldBe(visible).click();
-		logger.info("Selected the departure date button");
+		LogUtils.info("Selected the departure date button");
 	}
 
 
 	private static void selectMonthAndYear(String targetMonthAndYear) {
 		String currentMonthAndYear = $x("(//div[@class='rdrMonthName'])[1]").getText();
-		logger.info("Month and Year got from Calender {}", currentMonthAndYear);
+		LogUtils.info("Month and Year got from Calender {}", currentMonthAndYear);
 		String lang = LanguageUtils.detectLanguage(currentMonthAndYear);
-		logger.info("Language is {}", lang);
+		LogUtils.info("Language is {}", lang);
 
 		String[] currentParts = currentMonthAndYear.split(" ");
-		logger.info("Length of month and year {}", currentParts.length);
+		LogUtils.info("Length of month and year {}", currentParts.length);
 		String currentMonth = "";
 		if (lang.equalsIgnoreCase("en")){
 			currentMonth = currentParts[0];
-			logger.info("Current month {}", currentMonth);
+			LogUtils.info("Current month {}", currentMonth);
 		} else if (lang.equalsIgnoreCase("vi")){
-			logger.info(currentParts[0] + " " + currentParts[1]);
+			LogUtils.info(currentParts[0] + " " + currentParts[1]);
 			currentMonth = MonthTranslation.getOriginalName(currentParts[0] + " " + currentParts[1], lang);
-			logger.info("Current month {}", currentMonth);
+			LogUtils.info("Current month {}", currentMonth);
 		}
 		String currentYear = currentParts[currentParts.length - 1];
-		logger.info("Current year {}", currentYear);
+		LogUtils.info("Current year {}", currentYear);
 
 		String[] parts = targetMonthAndYear.split(" ");
-		logger.info("month and year: {} {}", parts[0], parts[1]);
+		LogUtils.info("month and year: {} {}", parts[0], parts[1]);
 		String targetMonth;
 		targetMonth =  parts[0];
-		logger.info("target month {}", targetMonth);
+		LogUtils.info("target month {}", targetMonth);
 		String targetYear = parts[parts.length - 1];
-		logger.info("target year {}", targetYear);
+		LogUtils.info("target year {}", targetYear);
 
 		while (!currentMonth.equalsIgnoreCase(targetMonth) || !currentYear.equals(targetYear)) {
 			if (Integer.parseInt(targetYear) > Integer.parseInt(currentYear) ||
@@ -177,29 +175,29 @@ public class HomePage {
 	@Step
 	private void selectTicketType(String ticketType) {
 		if (ticketType.equalsIgnoreCase("round trip")){
-			logger.info("Select Round Trip");
+			LogUtils.info("Select Round Trip");
 			roundTripRad.click();
 		}else if (ticketType.equalsIgnoreCase("one way")){
-			logger.info("Select One Way");
+			LogUtils.info("Select One Way");
 			oneWayRad.click();
 		}
 	}
 
 	public void selectDeniedAdButton(){
 		if (adAlert.isDisplayed()) {
-			logger.info("Select Denied Ad button");
+			LogUtils.info("Select Denied Ad button");
 			deniedAddBtn.click();
 		}
-		logger.info("Ad alert is closed");
+		LogUtils.info("Ad alert is closed");
 		adAlert.shouldBe(disappear);
 	}
 
 	public void selectAcceptCookiesButton(){
 		if (cookiePopUp.isDisplayed()){
-			logger.info("Select Accept Cookie button");
+			LogUtils.info("Select Accept Cookie button");
 			acceptCookiesBtn.click();
 		}
-		logger.info("Cookie Pop up is closed");
+		LogUtils.info("Cookie Pop up is closed");
 		cookiePopUp.shouldBe(disappear);
 	}
 

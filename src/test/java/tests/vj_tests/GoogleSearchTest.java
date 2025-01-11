@@ -1,10 +1,10 @@
-package org.tvd.projects.google.tests;
+package tests.vj_tests;
 
 import io.qameta.allure.Description;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import org.tvd.projects.BaseTest;
 import org.tvd.projects.google.pages.GooglePage;
+import tests.BaseTest;
 
 public class GoogleSearchTest extends BaseTest {
 

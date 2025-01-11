@@ -1,1 +1,1 @@
-com.epam.reportportal.testng.ReportPortalTestNGListener
+org.tvd.listeners.TestListener
