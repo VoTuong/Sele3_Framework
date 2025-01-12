@@ -13,7 +13,7 @@ public class ScreenshotUtils {
 	@Attachment(value = "Screenshot on failure", type = "image/png")
 	public static byte[] takeScreenshot() {
 		try {
-			File screenshotFile = new File(Objects.requireNonNull(Selenide.screenshot("screenshot.png")));
+			File screenshotFile = new File(Objects.requireNonNull(Selenide.screenshot("screenshot")));
 			byte[] fileContent = Files.readAllBytes(screenshotFile.toPath());
 			LogUtils.info("Take a screenshot");
 			return fileContent;

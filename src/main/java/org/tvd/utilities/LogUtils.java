@@ -9,24 +9,37 @@ public class LogUtils {
 
     //Info Level Logs
     public static void info(String message) {
-        LOGGER.info(message);
+        LOGGER.info("Class: {} - Message: {}", getCallerClassName(), message);
     }
 
     public static void info(String message, Object... params) {
-        LOGGER.info(message, params);
+        LOGGER.info("Class: {} - Message: {} {}", getCallerClassName(), message, params);
+    }
+
+    public static void debug(String message, Object... params) {
+        LOGGER.debug("Class: {} - Message: {} {}", getCallerClassName(), message, params);
     }
 
     //Warn Level Logs
     public static void warn(String message) {
-        LOGGER.warn(message);
+        LOGGER.warn("Class: {} - Message: {}", getCallerClassName(), message);
     }
 
     //Error Level Logs
     public static void error(String message) {
-        LOGGER.error(message);
+        LOGGER.error("Class: {} - Message: {}", getCallerClassName(), message);
+    }
+
+    public static void error(String message, Object... params) {
+        LOGGER.error("Class: {} - Message: {} {}", getCallerClassName(), message, params);
     }
 
     public static void logException(Exception e) {
 	    LOGGER.error("Exception: {}", e.getMessage(), e);
+    }
+
+    private static String getCallerClassName() {
+        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+        return stackTrace[3].getClassName();
     }
 }
