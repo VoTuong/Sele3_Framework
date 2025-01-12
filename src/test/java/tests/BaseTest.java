@@ -30,7 +30,7 @@ public class BaseTest {
 
 		Configuration.headless = false;
 //		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
-		LogUtils.info("Start {} TestNG testcases in {}", getClass().getName(), Configuration.browser);
+		LogUtils.info("Start TestNG testcases in {}", getClass().getName(), Configuration.browser);
 	}
 
 
