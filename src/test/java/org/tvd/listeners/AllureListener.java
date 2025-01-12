@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public class AllureListener implements TestLifecycleListener {
 
-//	protected static final String LOG_PATH = "build/logs/";
+	//	protected static final String LOG_PATH = "build/logs/";
 	private static final ThreadLocal<String> TL_TEST_UUID = new ThreadLocal<>();
 //	private static final String LOG_FILE_PATTERN = "test-%s.log";
 //	private final Logger LOGGER = LogManager.getLogger();

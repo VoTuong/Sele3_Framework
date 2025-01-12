@@ -25,7 +25,7 @@ public class ScreenshotUtils {
 
 	public static void takeScreenshotAndAddToAllure(String description) {
 		byte[] screenshot = takeScreenshot();
-		if(screenshot != null) {
+		if (screenshot != null) {
 			saveScreenshotToAllure(screenshot, description);
 		}
 	}
