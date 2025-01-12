@@ -15,11 +15,11 @@
     <!--            <class name="org.tvd.vj_tests.google.projects.GoogleSearchTest" />-->
     <!--        </classes>-->
     <!--    </test>-->
-<!--    <test name="Edge Grid">-->
-<!--        <parameter name="browser" value="edge"/>-->
-<!--        <parameter name="executionMode" value="local"/>-->
-<!--        <classes>-->
-<!--            <class name="org.tvd.vj_tests.google.projects.GoogleSearchTest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <!--    <test name="Edge Grid">-->
+    <!--        <parameter name="browser" value="edge"/>-->
+    <!--        <parameter name="executionMode" value="local"/>-->
+    <!--        <classes>-->
+    <!--            <class name="org.tvd.vj_tests.google.projects.GoogleSearchTest"/>-->
+    <!--        </classes>-->
+    <!--    </test>-->
 </suite>

@@ -26,9 +26,14 @@ public class LogUtils {
 		LOGGER.error("Class: {} - Message: {}", getCallerClassName(), message);
 	}
 
+	public static void error(String message, Object... args) {
+		LOGGER.error("Class: {} - Message: {} {}", getCallerClassName(), message, args);
+	}
+
 	public static void logException(Exception e) {
 		LOGGER.error("Exception: {}", e.getMessage(), e);
 	}
+
 
 	private static String getCallerClassName() {
 		StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();

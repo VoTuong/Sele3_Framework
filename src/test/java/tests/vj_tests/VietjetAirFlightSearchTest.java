@@ -32,5 +32,8 @@ public class VietjetAirFlightSearchTest extends BaseTest {
 		chooseFlightPage.shouldDisplayTicketFlight();
 		chooseFlightPage.chooseTheLowestPriceTicket();
 		chooseFlightPage.selectContinue();
+
+		chooseFlightPage.chooseTheLowestPriceTicket();
+		chooseFlightPage.selectContinue();
 	}
 }

@@ -17,7 +17,7 @@
         <java-compiler.version>21</java-compiler.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <tika-core.version>3.0.0</tika-core.version>
+        <tika.version>3.0.0</tika.version>
     </properties>
 
     <dependencies>
@@ -25,13 +25,13 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-langdetect-optimaize</artifactId>
-            <version>3.0.0</version>
+            <version>${tika.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-            <version>3.0.0</version>
+            <version>${tika.version}</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->

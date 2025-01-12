@@ -19,7 +19,7 @@ public class TestListener implements ITestListener {
 
 	@Override
 	public void onTestFailure(ITestResult result) {
-		LogUtils.error("Test failed: " + result.getName());
+		LogUtils.error("Test failed: ", result.getName());
 		LogUtils.logException((Exception) result.getThrowable());
 		String description = "Failed test: " + result.getName();
 		ScreenshotUtils.takeScreenshotAndAddToAllure(description);
