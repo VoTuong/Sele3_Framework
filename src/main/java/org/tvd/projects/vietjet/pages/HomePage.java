@@ -107,13 +107,14 @@ public class HomePage {
 	}
 
 	@Step
-	public void searchTicket(TicketModel ticket) {
+	public ChooseFlightPage searchTicket(TicketModel ticket) {
 		selectTicketType(ticket.getTicketType());
 		selectDepartureCity(ticket.getFlightFrom());
 		selectArrivalCity(ticket.getFlightTo());
 		selectDepartureDateAndReturnDate();
 		selectNumberOfAdults(ticket.getPassengerCount().getAdults());
 		selectFindFlight();
+		return new ChooseFlightPage();
 	}
 
 	private void clickOnFormToDismissDropdown() {

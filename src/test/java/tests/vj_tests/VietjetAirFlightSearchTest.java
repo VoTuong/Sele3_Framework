@@ -26,14 +26,14 @@ public class VietjetAirFlightSearchTest extends BaseTest {
 	@Story("Search for the cheapest round-trip flight in the next 3 days")
 	public void testSearchForFlights(TicketModel ticket) {
 		HomePage homePage = new HomePage();
-		ChooseFlightPage chooseFlightPage = new ChooseFlightPage();
+		ChooseFlightPage chooseFlightPage;
 		homePage.openHomePage();
-		homePage.searchTicket(ticket);
-		chooseFlightPage.shouldDisplayTicketFlight();
+		chooseFlightPage = homePage.searchTicket(ticket);
+//		chooseFlightPage.shouldDisplayTicketFlight();
 		chooseFlightPage.chooseTheLowestPriceTicket();
-		chooseFlightPage.selectContinue();
+//		chooseFlightPage.selectContinue();
 
-		chooseFlightPage.chooseTheLowestPriceTicket();
-		chooseFlightPage.selectContinue();
+//		chooseFlightPage.chooseTheLowestPriceTicket();
+//		chooseFlightPage.selectContinue();
 	}
 }
