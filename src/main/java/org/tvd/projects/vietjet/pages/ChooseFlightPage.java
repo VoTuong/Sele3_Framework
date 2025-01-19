@@ -7,9 +7,9 @@ import org.tvd.utilities.LogUtils;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.CollectionCondition.sizeGreaterThan;
+import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
@@ -21,6 +21,7 @@ public class ChooseFlightPage {
 	private static final ElementsCollection currentLowestPrice = $$("div.slick-current p.MuiTypography-subtitle1 span");
 	private static final ElementsCollection ticketPrices = $$("p.MuiTypography-h4");
 	private static final SelenideElement continueBtn = $("button.MuiButton-contained");
+	private static final SelenideElement vjFlightIcon = $x("//img[@alt='vietjet flight']");
 
 	public ChooseFlightPage() {
 		LogUtils.info("Initializing Select Ticket Page...");
@@ -42,103 +43,95 @@ public class ChooseFlightPage {
 
 	@Step
 	public void selectContinue() {
-		LogUtils.info("Selecting Continue button");
+		LogUtils.info("Selecting 'Continue' button");
 		continueBtn.shouldBe(visible).click();
 	}
 
 	private void scrollToBottom() {
 		LogUtils.info("Scrolling to the bottom of the page...");
-		executeJavaScript("window.scrollTo(0, document.body.scrollHeight);");
-//		sleep(2000); // Chờ một chút để các phần tử tải nếu cần
+		vjFlightIcon.shouldBe(exist).scrollTo();
+	}
+
+	private void waitForPricesToLoad() {
+		ticketPrices.shouldBe(sizeGreaterThan(0), Duration.ofSeconds(10)); // Chờ tối đa 10 giây để danh sách giá vé xuất hiện
+		LogUtils.info("Ticket prices loaded successfully.");
+	}
+
+	@Step("Choose the tickets for arrival flight and departure flight")
+	public void selectTicketsForArrivalAndDepartureFlights() {
+		LogUtils.info("Selecting the tickets for arrival and departure flights");
+		chooseTheLowestPriceTicket();
+		chooseTheLowestPriceTicket();
 	}
 
 	@Step
-	public void chooseTheLowestPriceTicket() {
+	private void chooseTheLowestPriceTicket() {
+		waitForPricesToLoad();
 		LogUtils.info("Choosing the lowest price");
 		String cheapestPrice = getSuggestedPrice();
 		LogUtils.info("The cheapest price: " + cheapestPrice);
-
-		List<String> allPrices = getAllTicketPrices();
-		LogUtils.info("All ticket prices: " + allPrices);
-
-		for (int i = 0; i < allPrices.size(); i++) {
-			String price = allPrices.get(i);
-			if (price.equals(cheapestPrice)) {
-				LogUtils.info("Selecting the ticket with price: " + price);
-				SelenideElement priceElement = $x(String.format("(//p[contains(@class, 'MuiTypography-h4')])[%d]", i + 1));
-				priceElement.shouldBe(visible).click();
-				return;
-			}
-		}
-		LogUtils.warn("No ticket found with the cheapest price: " + cheapestPrice);
+		scrollStepByStepToPriceAndSelect(cheapestPrice);
 	}
 
 	private String getSuggestedPrice() {
 		currentLowestPrice.shouldBe(sizeGreaterThan(0));
-		return formatPrice(String.join("", currentLowestPrice.texts()));
+		return removeTrailingZeros(formatPrice(String.join("", currentLowestPrice.texts())));
 	}
 
-	private List<String> getAllTicketPrices() {
-		scrollToBottom();
+	private String removeTrailingZeros(String price) {
+		// Loại bỏ phần "000" ở cuối chuỗi, nhưng để lại giá trị "0"
+		if (price.endsWith("000")) {
+			return price.substring(0, price.length() - 3); // Cắt bỏ 3 ký tự cuối
+		}
+		return price;
+	}
+
+	private void scrollStepByStepToPriceAndSelect(String targetPrice) {
+		boolean priceFound = false;
+		int maxScrollAttempts = 20;
+		int attempts = 0;
+
 		ticketPrices.shouldBe(sizeGreaterThan(0));
-		return ticketPrices.texts().stream()
-				.map(this::formatPrice)
-				.collect(Collectors.toList());
+
+		while (!priceFound && attempts < maxScrollAttempts) {
+			// Lấy danh sách giá hiện có
+			ElementsCollection priceElements = $$x("//p[contains(@class, 'MuiTypography-h4')]");
+			List<String> allPrices = priceElements.texts().stream()
+					.map(this::formatPrice)
+					.toList();
+
+			LogUtils.info("Attempt " + (attempts + 1) + " Found " + allPrices.size() + " new prices.");
+			LogUtils.info("All ticket prices: " + allPrices);
+
+			for (int i = 0; i < allPrices.size(); i++) {
+				String price = allPrices.get(i);
+				if (price.equals(targetPrice)) {
+					LogUtils.info("Selecting the ticket with price: " + price);
+					SelenideElement priceElement = $x(String.format("(//p[contains(@class, 'MuiTypography-h4')])[%d]"
+							, i + 1));
+					priceElement.scrollIntoView("{behavior: \"instant\", block: \"center\", inline: \"center\"}").click();
+					LogUtils.info("Clicked on the ticket with price: " + priceElement.getText());
+					selectContinue();
+					priceFound = true;
+					break;
+				}
+			}
+
+			if (!priceFound) {
+				LogUtils.info("Scrolling down step by step...");
+				scrollToBottom();
+			}
+			attempts++;
+		}
+
+		if (!priceFound) {
+			LogUtils.warn("Target price not found after " + maxScrollAttempts + " attempts.");
+		}
 	}
 
 	private String formatPrice(String price) {
 		return price.replace(",", "").replace(" ", "").replaceAll("\\D", "");
 	}
 
-//	private String getSuggestedPrice() {
-//		currentLowestPrice.shouldBe(sizeGreaterThan(0));
-//		List<String> prices = currentLowestPrice.texts();
-//
-//		// Chuyển đổi và định dạng tất cả giá trị
-//		List<Integer> formattedPrices = prices.stream()
-//				.map(this::convertToInteger)
-//				.toList();
-//
-//		// Lấy giá nhỏ nhất
-//		int minPrice = formattedPrices.stream().min(Integer::compareTo).orElseThrow();
-//		return String.valueOf(minPrice);
-//	}
-//
-//	private List<String> getAllTicketPrices() {
-//		ticketPrices.shouldBe(sizeGreaterThan(0));
-//		scrollToBottom();
-//		List<Integer> formattedPrices = new ArrayList<>();
-//		for (String price : ticketPrices.texts()) {
-//			try {
-//				String formattedPrice = price.replace(",", "").replace(" ", "").trim();
-//				if (!formattedPrice.matches("\\d+")) {
-//					LogUtils.warn("Invalid price encountered: " + price);
-//					continue;
-//				}
-//
-//				int priceValue = Integer.parseInt(formattedPrice) * 1000;
-//				formattedPrices.add(priceValue);
-//			} catch (NumberFormatException e) {
-//				LogUtils.error("Failed to convert price to integer: " + price, e);
-//			}
-//		}
-//
-//		return formattedPrices.stream().map(String::valueOf).collect(Collectors.toList());
-//	}
-//
-//	private int convertToInteger(String price) {
-//		String cleanPrice = price.replace(",", "").replace(" ", "").replaceAll("\\D", "");
-//		return Integer.parseInt(cleanPrice);
-//	}
-
-
-	private boolean isLastPriceVisible(SelenideElement lastPrice) {
-		Object jsResult = executeJavaScript("return window.innerHeight;");
-		if (jsResult != null) {
-			int windowHeight = ((Number) jsResult).intValue();
-			return lastPrice.getLocation().getY() + lastPrice.getSize().getHeight() <= windowHeight;
-		}
-		return false;
-	}
 
 }

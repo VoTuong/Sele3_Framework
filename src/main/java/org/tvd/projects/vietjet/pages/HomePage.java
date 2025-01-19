@@ -22,9 +22,8 @@ public class HomePage {
 	private static final SelenideElement acceptCookiesBtn = $x("//div[@id='popup-dialog-description']/following" +
 			"-sibling" +
 			"::div/button");
-	private static final SelenideElement adAlert = $x("//div[@id='NC_background_color']");
-	private static final SelenideElement deniedAddBtn = $x("//div[@id='NC_background_color']//button[@id = " +
-			"'NC_CTA_TWO']");
+	private static final SelenideElement notificationBanner = $x("//div[@id='st_notification_banner']");
+	private static final SelenideElement notificationIframe = $x("//iframe[@id='preview-notification-frame']");
 	private static final SelenideElement roundTripRad = $x("//input[@value='roundTrip']");
 	private static final SelenideElement oneWayRad = $x("//input[@value='oneway']");
 	private static final SelenideElement departureAirportTxt = $x("//input[@class='MuiInputBase-input " +
@@ -37,12 +36,9 @@ public class HomePage {
 			"MuiOutlinedInput-input' and not(@id='arrivalPlaceDesktop')]//ancestor::div[.//div[@role='button']]/div[@role='button']");
 	private static final SelenideElement addAdultButton = $x("//img[@alt='adults']//parent::div//parent::div" +
 			"//parent::div//button[2]");
-	//	private static final SelenideElement returnDateTxt = $x("//input[@class='MuiInputBase-input " +
-//			"MuiOutlinedInput-input' and @id='arrivalPlaceDesktop']//ancestor::div[.//div[@role='button']]/div[@role='button']//p");
-//	private static final SelenideElement lowestPriceChx = $x("//span[@class='MuiIconButton-label']//input[@type" +
-//			"='checkbox']");
 	private static final SelenideElement findFlightButton = $x("//button[contains(@class, 'MuiButtonBase-root MuiButton-root " +
 			"MuiButton-contained')]/span[@class='MuiButton-label']");
+
 
 	@Step
 	private static void selectDepartureDateButton() {
@@ -103,7 +99,8 @@ public class HomePage {
 		LogUtils.info("Open the VietJet Air homepage");
 		open("https://www.vietjetair.com/");
 		selectAcceptCookiesButton();
-		selectDeniedAdButton();
+//		selectDeniedAdButton();
+		closeNotificationBanner();
 	}
 
 	@Step
@@ -191,13 +188,21 @@ public class HomePage {
 		}
 	}
 
-	public void selectDeniedAdButton() {
-		if (adAlert.isDisplayed()) {
-			LogUtils.info("Select Denied Ad button");
-			deniedAddBtn.click();
+	public void closeNotificationBanner() {
+		if (notificationBanner.isDisplayed()) {
+			switchTo().frame(notificationIframe);
+			LogUtils.info("Switched to notification iframe.");
+			SelenideElement closeButton = $x("//button[@id ='NC_CTA_TWO']");
+			if (closeButton.exists()) {
+				closeButton.shouldBe(visible).click();
+				LogUtils.info("Notification banner closed successfully.");
+			} else {
+				LogUtils.warn("Close button not found inside iframe.");
+			}
+			switchTo().defaultContent();
+		} else {
+			LogUtils.info("Notification banner is not displayed.");
 		}
-		LogUtils.info("Ad alert is closed");
-		adAlert.shouldBe(disappear);
 	}
 
 	public void selectAcceptCookiesButton() {
