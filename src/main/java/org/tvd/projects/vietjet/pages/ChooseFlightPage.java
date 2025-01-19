@@ -53,7 +53,7 @@ public class ChooseFlightPage {
 	}
 
 	private void waitForPricesToLoad() {
-		ticketPrices.shouldBe(sizeGreaterThan(0), Duration.ofSeconds(10)); // Chờ tối đa 10 giây để danh sách giá vé xuất hiện
+		ticketPrices.shouldBe(sizeGreaterThan(0), Duration.ofSeconds(10));
 		LogUtils.info("Ticket prices loaded successfully.");
 	}
 
@@ -79,9 +79,8 @@ public class ChooseFlightPage {
 	}
 
 	private String removeTrailingZeros(String price) {
-		// Loại bỏ phần "000" ở cuối chuỗi, nhưng để lại giá trị "0"
 		if (price.endsWith("000")) {
-			return price.substring(0, price.length() - 3); // Cắt bỏ 3 ký tự cuối
+			return price.substring(0, price.length() - 3);
 		}
 		return price;
 	}
@@ -94,7 +93,6 @@ public class ChooseFlightPage {
 		ticketPrices.shouldBe(sizeGreaterThan(0));
 
 		while (!priceFound && attempts < maxScrollAttempts) {
-			// Lấy danh sách giá hiện có
 			ElementsCollection priceElements = $$x("//p[contains(@class, 'MuiTypography-h4')]");
 			List<String> allPrices = priceElements.texts().stream()
 					.map(this::formatPrice)

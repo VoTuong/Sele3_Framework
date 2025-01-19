@@ -9,7 +9,6 @@ import io.qameta.allure.selenide.AllureSelenide;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.tvd.utilities.LogUtils;
-import org.tvd.utilities.ScreenshotUtils;
 
 import static com.codeborne.selenide.Selenide.getUserAgent;
 import static com.codeborne.selenide.Selenide.open;
@@ -18,15 +17,16 @@ import static com.codeborne.selenide.WebDriverRunner.isHeadless;
 import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnvironmentWriter;
 
 public class BaseTest {
-	static {
-		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
-	}
 
 	@Parameters({"browser", "executionMode"})
 	@BeforeClass
 	public void setUp(String browser, @Optional("") String executionMode) {
 		Configuration.browser = browser;
 		Configuration.headless = false;
+		SelenideLogger.addListener("AllureSelenide", new AllureSelenide()
+				.screenshots(true)
+				.savePageSource(true)
+		);
 		LogUtils.info("Start TestNG testcases in ", getClass().getName(), browser);
 	}
 
@@ -48,10 +48,6 @@ public class BaseTest {
 						.put("isHeadless", String.valueOf(isHeadless()))
 						.build(), System.getProperty("user.dir") + "/allure-results/");
 
-		if (result.getStatus() == ITestResult.FAILURE) {
-			LogUtils.error("Test case failed: " + result.getName());
-			ScreenshotUtils.takeScreenshotAndAddToAllure(result.getName());
-		}
 		Selenide.closeWebDriver();
 	}
 

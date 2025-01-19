@@ -9,6 +9,4 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PassengerCount {
 	private int adults;
-//	int children;
-//	int infants;
 }
