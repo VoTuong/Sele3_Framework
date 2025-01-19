@@ -3,14 +3,13 @@ package tests;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.ImmutableMap;
+import io.qameta.allure.selenide.AllureSelenide;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
-import org.tvd.base.DriverFactory;
 import org.tvd.utilities.LogUtils;
 import org.tvd.utilities.ScreenshotUtils;
-
-import java.net.MalformedURLException;
 
 import static com.codeborne.selenide.Selenide.getUserAgent;
 import static com.codeborne.selenide.Selenide.open;
@@ -19,18 +18,16 @@ import static com.codeborne.selenide.WebDriverRunner.isHeadless;
 import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnvironmentWriter;
 
 public class BaseTest {
-//	static {
-//		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
-//	}
+	static {
+		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
+	}
 
 	@Parameters({"browser", "executionMode"})
 	@BeforeClass
-	public void setUp(String browser, @Optional("") String executionMode) throws MalformedURLException {
-		DriverFactory.setupDriver(browser, executionMode);
-
+	public void setUp(String browser, @Optional("") String executionMode) {
+		Configuration.browser = browser;
 		Configuration.headless = false;
-//		SelenideLogger.addListener("AllureSelenide", new AllureSelenide().screenshots(true).savePageSource(true));
-		LogUtils.info("Start TestNG testcases in {}", getClass().getName(), Configuration.browser);
+		LogUtils.info("Start TestNG testcases in ", getClass().getName(), browser);
 	}
 
 
