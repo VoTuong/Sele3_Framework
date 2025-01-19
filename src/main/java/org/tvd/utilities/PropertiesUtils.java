@@ -20,7 +20,6 @@ public class PropertiesUtils {
 				properties.load(file);
 				file.close();
 			}
-			// Get value from file
 			keyValue = properties.getProperty(key);
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
