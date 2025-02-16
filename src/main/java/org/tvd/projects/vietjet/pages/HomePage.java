@@ -11,17 +11,20 @@ import org.tvd.utilities.PropertiesUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.*;
 
 public class HomePage {
+	private final ResourceBundle messages;
+	private final String langCode;
 
 	private static final SelenideElement cookiePopUp = $x("//div[@id='popup-dialog-description']");
-	private static final SelenideElement acceptCookiesBtn = $x("//div[@id='popup-dialog-description']/following" +
-			"-sibling" +
-			"::div/button");
+	private static final SelenideElement acceptCookiesBtn = $x("//div[@id='popup-dialog-description']" +
+			"/following-sibling::div/button");
 	private static final SelenideElement notificationBanner = $x("//div[@id='st_notification_banner']");
 	private static final SelenideElement notificationIframe = $x("//iframe[@id='preview-notification-frame']");
 	private static final SelenideElement roundTripRad = $x("//input[@value='roundTrip']");
@@ -36,9 +39,19 @@ public class HomePage {
 			"MuiOutlinedInput-input' and not(@id='arrivalPlaceDesktop')]//ancestor::div[.//div[@role='button']]/div[@role='button']");
 	private static final SelenideElement addAdultButton = $x("//img[@alt='adults']//parent::div//parent::div" +
 			"//parent::div//button[2]");
-	private static final SelenideElement findFlightButton = $x("//button[contains(@class, 'MuiButtonBase-root MuiButton-root " +
-			"MuiButton-contained')]/span[@class='MuiButton-label']");
 
+	private static final String findFlightButton = "//div[contains(@class, 'MuiBox-root')" +
+			"]/following-sibling::div//button[contains(span, \"%s\")]";
+
+	public HomePage(String langCode) {
+		this.langCode = langCode;
+		Locale locale =  Locale.of(langCode);
+		this.messages = ResourceBundle.getBundle("vj_locator", locale);
+	}
+
+	private String getLangCode() {
+		return this.langCode;
+	}
 
 	@Step
 	private static void selectDepartureDateButton() {
@@ -97,9 +110,8 @@ public class HomePage {
 
 	public void openHomePage() {
 		LogUtils.info("Open the VietJet Air homepage");
-		open("https://www.vietjetair.com/");
+//		open("https://www.vietjetair.com/");
 		selectAcceptCookiesButton();
-//		selectDeniedAdButton();
 		closeNotificationBanner();
 	}
 
@@ -116,12 +128,6 @@ public class HomePage {
 
 	private void clickOnFormToDismissDropdown() {
 		$x("(//*[@class='MuiSvgIcon-root'])[3]").shouldBe(visible).click();
-	}
-
-	@Step
-	private void selectFindFlight() {
-		clickOnFormToDismissDropdown();
-		findFlightButton.shouldBe(visible).click();
 	}
 
 	@Step
@@ -169,21 +175,31 @@ public class HomePage {
 		LogUtils.info("Set date take off ", tomorrowStr);
 		selectDepartureDateButton();
 
-		DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MMMM yyyy");
-		LogUtils.info("Selecting month ", tomorrow.format(monthYearFormatter));
-		selectMonthAndYear(tomorrow.format(monthYearFormatter));
+//		DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MMMM yyyy");
+//		LogUtils.info("Selecting month ", tomorrow.format(monthYearFormatter));
+//		selectMonthAndYear(tomorrow.format(monthYearFormatter));
 
 		selectDayInCalendar(tomorrowStr);
 		selectDayInCalendar(returnDateStr);
 	}
 
 	@Step
+	private void selectFindFlight() {
+		clickOnFormToDismissDropdown();
+		String findFlight = messages.getString("ticket.find_flight_button");
+		$x(String.format(findFlightButton,findFlight)).shouldBe(visible).click();
+	}
+
+	@Step
 	private void selectTicketType(String ticketType) {
-		if (ticketType.equalsIgnoreCase("round trip")) {
-			LogUtils.info("Select Round Trip");
+		String roundTripText = messages.getString("ticket.round_trip");
+		String oneWayText = messages.getString("ticket.one_way");
+
+		if (ticketType.equalsIgnoreCase(roundTripText)) {
+			LogUtils.info("Select {}", roundTripText);
 			roundTripRad.click();
-		} else if (ticketType.equalsIgnoreCase("one way")) {
-			LogUtils.info("Select One Way");
+		} else if (ticketType.equalsIgnoreCase(oneWayText)) {
+			LogUtils.info("Select {}", oneWayText);
 			oneWayRad.click();
 		}
 	}

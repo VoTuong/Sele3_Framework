@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
+import org.tvd.projects.vietjet.pages.HomePage;
 import org.tvd.utilities.LogUtils;
 
 import static com.codeborne.selenide.Selenide.getUserAgent;
@@ -18,6 +19,9 @@ import static com.github.automatedowl.tools.AllureEnvironmentWriter.allureEnviro
 
 public class BaseTest {
 
+	protected HomePage homePage;
+	protected String langCode;
+
 	@Parameters({"browser", "executionMode"})
 	@BeforeClass
 	public void setUp(String browser, @Optional("") String executionMode) {
@@ -27,15 +31,17 @@ public class BaseTest {
 				.screenshots(true)
 				.savePageSource(true)
 		);
+		langCode = System.getProperty("lang", "en");
+		homePage = new HomePage(langCode);
+		open(Configuration.baseUrl + langCode);
+		getWebDriver().manage().window().maximize();
 		LogUtils.info("Start TestNG testcases in ", getClass().getName(), browser);
 	}
 
 
-	@BeforeMethod
-	public void launch() {
-		open();
-		getWebDriver().manage().window().maximize();
-	}
+//	@BeforeMethod
+//	public void launch() {
+//	}
 
 	@AfterMethod
 	public void tearDown(ITestResult result) {
