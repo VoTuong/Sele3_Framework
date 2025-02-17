@@ -7,7 +7,10 @@ import com.codeborne.selenide.logevents.SelenideLogger;
 import com.google.common.collect.ImmutableMap;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.testng.ITestResult;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.tvd.projects.vietjet.pages.HomePage;
 import org.tvd.utilities.LogUtils;
 
@@ -37,11 +40,6 @@ public class BaseTest {
 		getWebDriver().manage().window().maximize();
 		LogUtils.info("Start TestNG testcases in ", getClass().getName(), browser);
 	}
-
-
-//	@BeforeMethod
-//	public void launch() {
-//	}
 
 	@AfterMethod
 	public void tearDown(ITestResult result) {

@@ -2,26 +2,21 @@ package org.tvd.projects.vietjet.pages;
 
 import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
-import org.openqa.selenium.By;
-import org.tvd.projects.vietjet.data.MonthTranslation;
 import org.tvd.projects.vietjet.models.TicketModel;
-import org.tvd.utilities.LanguageUtils;
+import org.tvd.utilities.CalendarUtils;
 import org.tvd.utilities.LogUtils;
 import org.tvd.utilities.PropertiesUtils;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.switchTo;
 
 public class HomePage {
-	private final ResourceBundle messages;
-	private final String langCode;
-
 	private static final SelenideElement cookiePopUp = $x("//div[@id='popup-dialog-description']");
 	private static final SelenideElement acceptCookiesBtn = $x("//div[@id='popup-dialog-description']" +
 			"/following-sibling::div/button");
@@ -39,18 +34,15 @@ public class HomePage {
 			"MuiOutlinedInput-input' and not(@id='arrivalPlaceDesktop')]//ancestor::div[.//div[@role='button']]/div[@role='button']");
 	private static final SelenideElement addAdultButton = $x("//img[@alt='adults']//parent::div//parent::div" +
 			"//parent::div//button[2]");
-
 	private static final String findFlightButton = "//div[contains(@class, 'MuiBox-root')" +
 			"]/following-sibling::div//button[contains(span, \"%s\")]";
+	private final ResourceBundle messages;
+	private final String langCode;
 
 	public HomePage(String langCode) {
 		this.langCode = langCode;
-		Locale locale =  Locale.of(langCode);
+		Locale locale = Locale.of(langCode);
 		this.messages = ResourceBundle.getBundle("vj_locator", locale);
-	}
-
-	private String getLangCode() {
-		return this.langCode;
 	}
 
 	@Step
@@ -60,57 +52,12 @@ public class HomePage {
 		LogUtils.info("Selected the departure date button");
 	}
 
-	private static void selectMonthAndYear(String targetMonthAndYear) {
-		String currentMonthAndYear = $x("(//div[@class='rdrMonthName'])[1]").getText();
-		LogUtils.info("Month and Year got from Calender ", currentMonthAndYear);
-		String lang = LanguageUtils.detectLanguage(currentMonthAndYear);
-		LogUtils.info("Language is ", lang);
-
-		String[] currentParts = currentMonthAndYear.split(" ");
-		LogUtils.info("Length of month and year ", currentParts.length);
-		String currentMonth = "";
-		if (lang.equalsIgnoreCase("en")) {
-			currentMonth = currentParts[0];
-			LogUtils.info("Current month ", currentMonth);
-		} else if (lang.equalsIgnoreCase("vi")) {
-			LogUtils.info(currentParts[0] + " " + currentParts[1]);
-			currentMonth = MonthTranslation.getOriginalName(currentParts[0] + " " + currentParts[1], lang);
-			LogUtils.info("Current month ", currentMonth);
-		}
-		String currentYear = currentParts[currentParts.length - 1];
-		LogUtils.info("Current year ", currentYear);
-
-		String[] parts = targetMonthAndYear.split(" ");
-		LogUtils.info("month and year: ", parts[0], parts[1]);
-		String targetMonth;
-		targetMonth = parts[0];
-		LogUtils.info("target month ", targetMonth);
-		String targetYear = parts[parts.length - 1];
-		LogUtils.info("target year ", targetYear);
-
-		while (!currentMonth.equalsIgnoreCase(targetMonth) || !currentYear.equals(targetYear)) {
-			if (Integer.parseInt(targetYear) > Integer.parseInt(currentYear) ||
-					(currentMonth.compareTo(targetMonth) < 0 && currentYear.equals(targetYear))) {
-				$(".rdrNextPrevButton.rdrNextButton").click();
-			} else {
-				$(By.cssSelector(".rdrNextPrevButton.rdrPprevButton")).click();
-			}
-			currentMonthAndYear = $(".rdrMonthAndYearPickers").getText();
-			currentParts = currentMonthAndYear.split(" ");
-			currentMonth = currentParts[0];
-			currentYear = currentParts[1];
-		}
-	}
-
-	private static void selectDayInCalendar(String day) {
-		LogUtils.info("select Day In Calendar");
-		String xpath = "//button[contains(@class, 'rdrDay')]//span[contains(@class, 'rdrDayNumber')]/span[text()='" + day + "']";
-		$(By.xpath(xpath)).shouldBe(visible).click();
+	private String getLangCode() {
+		return this.langCode;
 	}
 
 	public void openHomePage() {
 		LogUtils.info("Open the VietJet Air homepage");
-//		open("https://www.vietjetair.com/");
 		selectAcceptCookiesButton();
 		closeNotificationBanner();
 	}
@@ -166,28 +113,21 @@ public class HomePage {
 	@Step
 	private void selectDepartureDateAndReturnDate() {
 
-		LocalDate tomorrow = LocalDate.now().plusDays(1);
-		LocalDate returnDate = tomorrow.plusDays(Long.parseLong(PropertiesUtils.getValue("RETURN_DAYS")));
+		LocalDate tomorrow = LocalDate.now().plusDays(Long.parseLong(PropertiesUtils.getValue("DEPARTURE_DATE")));
+		LocalDate returnDate = tomorrow.plusDays(Long.parseLong(PropertiesUtils.getValue("RETURN_DATE")));
 
-		DateTimeFormatter dayFormatter = DateTimeFormatter.ofPattern("d");
-		String tomorrowStr = tomorrow.format(dayFormatter);
-		String returnDateStr = returnDate.format(dayFormatter);
-		LogUtils.info("Set date take off ", tomorrowStr);
+		LogUtils.info("Set date take off ", tomorrow.getDayOfMonth());
 		selectDepartureDateButton();
 
-//		DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MMMM yyyy");
-//		LogUtils.info("Selecting month ", tomorrow.format(monthYearFormatter));
-//		selectMonthAndYear(tomorrow.format(monthYearFormatter));
-
-		selectDayInCalendar(tomorrowStr);
-		selectDayInCalendar(returnDateStr);
+		CalendarUtils.selectDate(tomorrow.getDayOfMonth(), tomorrow.getMonthValue(), tomorrow.getYear(), Locale.of(getLangCode()));
+		CalendarUtils.selectDate(returnDate.getDayOfMonth(), returnDate.getMonthValue(), returnDate.getYear(), Locale.of(getLangCode()));
 	}
 
 	@Step
 	private void selectFindFlight() {
 		clickOnFormToDismissDropdown();
 		String findFlight = messages.getString("ticket.find_flight_button");
-		$x(String.format(findFlightButton,findFlight)).shouldBe(visible).click();
+		$x(String.format(findFlightButton, findFlight)).shouldBe(visible).click();
 	}
 
 	@Step
@@ -196,10 +136,10 @@ public class HomePage {
 		String oneWayText = messages.getString("ticket.one_way");
 
 		if (ticketType.equalsIgnoreCase(roundTripText)) {
-			LogUtils.info("Select {}", roundTripText);
+			LogUtils.info("Select ", roundTripText);
 			roundTripRad.click();
 		} else if (ticketType.equalsIgnoreCase(oneWayText)) {
-			LogUtils.info("Select {}", oneWayText);
+			LogUtils.info("Select ", oneWayText);
 			oneWayRad.click();
 		}
 	}
