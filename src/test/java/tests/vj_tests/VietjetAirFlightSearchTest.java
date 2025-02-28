@@ -29,7 +29,7 @@ public class VietjetAirFlightSearchTest extends BaseTest {
 		PassengerInfoPage passengerInfoPage = new PassengerInfoPage();
 		homePage.openHomePage();
 		chooseFlightPage = homePage.searchTicket(ticket);
-		chooseFlightPage.selectTicketsForArrivalAndDepartureFlights();
+		chooseFlightPage.selectTicketRoundTrip();
 		passengerInfoPage.shouldPassengerInfoFormDisplay();
 	}
 }

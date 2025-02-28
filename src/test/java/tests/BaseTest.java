@@ -12,6 +12,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import org.tvd.projects.vietjet.pages.HomePage;
+import org.tvd.utilities.FileUtils;
 import org.tvd.utilities.LogUtils;
 
 import static com.codeborne.selenide.Selenide.getUserAgent;
@@ -50,7 +51,7 @@ public class BaseTest {
 						.put("WebDriver", String.valueOf(getWebDriver()))
 						.put("UserAgent", getUserAgent())
 						.put("isHeadless", String.valueOf(isHeadless()))
-						.build(), System.getProperty("user.dir") + "/allure-results/");
+						.build(), FileUtils.getCurrentDir() + "allure-results/");
 
 		Selenide.closeWebDriver();
 	}
