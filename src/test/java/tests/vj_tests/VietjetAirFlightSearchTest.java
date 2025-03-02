@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 import org.tvd.projects.vietjet.models.PassengerCount;
 import org.tvd.projects.vietjet.models.TicketModel;
 import org.tvd.projects.vietjet.pages.ChooseFlightPage;
-import org.tvd.projects.vietjet.pages.HomePage;
 import org.tvd.projects.vietjet.pages.PassengerInfoPage;
 import tests.BaseTest;
 
@@ -26,12 +25,11 @@ public class VietjetAirFlightSearchTest extends BaseTest {
 	@Severity(SeverityLevel.CRITICAL)
 	@Story("Search for the cheapest round-trip flight in the next 3 days")
 	public void testSearchForFlights(TicketModel ticket) {
-		HomePage homePage = new HomePage();
 		ChooseFlightPage chooseFlightPage;
 		PassengerInfoPage passengerInfoPage = new PassengerInfoPage();
 		homePage.openHomePage();
 		chooseFlightPage = homePage.searchTicket(ticket);
-		chooseFlightPage.selectTicketsForArrivalAndDepartureFlights();
+		chooseFlightPage.selectTicketRoundTrip();
 		passengerInfoPage.shouldPassengerInfoFormDisplay();
 	}
 }

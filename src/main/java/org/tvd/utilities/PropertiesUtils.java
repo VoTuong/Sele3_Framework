@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class PropertiesUtils {
 
-	private static final String propertiesFilePath = "src/test/resources/config/config.properties";
+	private static final String propertiesFilePath = "config/config.properties";
 	private static Properties properties;
 	private static FileInputStream file;
 
@@ -15,7 +15,7 @@ public class PropertiesUtils {
 		try {
 			if (file == null) {
 				properties = new Properties();
-				String linkFile = FileUtils.getCurrentDir() + propertiesFilePath;
+				String linkFile = FileUtils.getFilePath(propertiesFilePath);
 				file = new FileInputStream(linkFile);
 				properties.load(file);
 				file.close();

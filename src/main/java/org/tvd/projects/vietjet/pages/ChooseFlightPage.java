@@ -58,10 +58,15 @@ public class ChooseFlightPage {
 	}
 
 	@Step("Choose the tickets for arrival flight and departure flight")
-	public void selectTicketsForArrivalAndDepartureFlights() {
+	public void selectTicketRoundTrip() {
 		LogUtils.info("Selecting the tickets for arrival and departure flights");
 		chooseTheLowestPriceTicket();
+		sleep(1000);
+		selectContinue();
+//		sleep(3000);
 		chooseTheLowestPriceTicket();
+		sleep(1000);
+		selectContinue();
 	}
 
 	@Step
@@ -71,6 +76,7 @@ public class ChooseFlightPage {
 		String cheapestPrice = getSuggestedPrice();
 		LogUtils.info("The cheapest price: " + cheapestPrice);
 		scrollStepByStepToPriceAndSelect(cheapestPrice);
+//		selectContinue();
 	}
 
 	private String getSuggestedPrice() {
@@ -109,7 +115,7 @@ public class ChooseFlightPage {
 							, i + 1));
 					priceElement.scrollIntoView("{behavior: \"instant\", block: \"center\", inline: \"center\"}").click();
 					LogUtils.info("Clicked on the ticket with price: " + priceElement.getText());
-					selectContinue();
+
 					priceFound = true;
 					break;
 				}
