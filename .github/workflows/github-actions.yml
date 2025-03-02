@@ -1,0 +1,74 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: Maven Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path: ${{ github.workspace }} # location for the settings.xml file
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - name: Publish to GitHub Packages Apache Maven
+      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Allure Report with history
+  # You may pin to the exact commit or the version.
+  # uses: simple-elf/allure-report-action@f841fec0e421b5d7d8e807dedfb03efb8cf30303
+      uses: simple-elf/allure-report-action@v1.12
+      with:
+          # Allure test result data dir
+          allure_results: # default is allure-results
+            allure-results
+        # Allure report target dir
+          allure_report: # default is allure-report
+            allure-report
+        # Folder with gh-pages branch
+          gh_pages: # default is gh-pages
+            gh-pages
+        # Folder for allure history
+          allure_history: # default is allure-history
+            allure-history
+        # Keep X last reports
+          keep_reports: # optional, default is 20
+            20
+        # GitHub Actions build number
+          github_run_num: # default is ${{ github.run_number }}
+            ${{ github.run_number }}
+        # GitHub Actions run id
+          github_run_id: # default is ${{ github.run_id }}
+            ${{ github.run_id }}
+        # GitHub repository
+          github_repo: # default is ${{ github.repository }}
+            ${{ github.repository }}
+        # GitHub repository owner
+          github_repo_owner: # default is ${{ github.repository_owner }}
+            ${{ github.repository_owner }}
+        # GitHub repository where test are run
+          github_tests_repo: # default is ${{ github.repository }}
+            ${{ github.repository }}
+        # GitHub server URL
+          github_server_url: # default is ${{ github.server_url }}
+            ${{ github.server_url }}
+          
