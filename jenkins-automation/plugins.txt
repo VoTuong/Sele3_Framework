@@ -1,0 +1,8 @@
+email-ext
+mailer
+pipeline-utility-steps
+git
+allure-jenkins-plugin
+htmlpublisher
+workflow-aggregator
+github
